@@ -25,7 +25,7 @@ class _usuarios{
             $output['usuarios'] = $usuarios;
         }else{
             $output['error'] = true;
-            $output['error'] = "No hay usuarios registrados";
+            $output['message'] = "No hay usuarios registrados";
         }
 
         return $output;

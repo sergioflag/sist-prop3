@@ -56,7 +56,7 @@
     VALUES('Sergio','Flores','Lagunas','+52 418 585 6688','1993-10-27')
 
     INSERT INTO usuarios(id_persona,id_perfil,usuario,email,contrasena)
-    VALUES((SELECT MAX(id_persona)) FROM personas,1,'admin09','sergio@mail.com','admin09')
+    VALUES((SELECT MAX(id_persona) FROM personas),1,'admin09','sergio@mail.com','admin09')
     
     -- UPDATE USUARIO
     UPDATE personas
@@ -75,3 +75,29 @@
     UPDATE usuarios
     SET status = 0
     WHERE id_usuario = ''
+
+-- METODOS LECTORES
+
+    -- GET LECTORES
+    SELECT
+        lectores.direccion direccion, lectores.status estado,
+        CONCAT(personas.nombres,' ',personas.a_paterno,' ',personas.a_materno) nombre
+    FROM personas
+    INNER JOIN lectores ON personas.id_persona = lectores.id_persona
+
+    -- GET LECTOR
+    SELECT
+        lectores.direccion direccion, lectores.status estado,
+        CONCAT(personas.nombres,' ',personas.a_paterno,' ',personas.a_materno) nombre
+    FROM personas
+    INNER JOIN lectores ON personas.id_persona = lectores.id_persona
+    WHERE lectores.id_persona = ''
+
+    -- INSERT LECTOR
+     -- MISMA DATA DE PERSONA
+    
+    INSERT INTO usuarios(id_persona,direccion)
+    VALUES((SELECT MAX(id_persona) FROM personas),'')
+    
+    -- UPDATE LECTOR
+    -- DELETE LECTOR
