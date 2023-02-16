@@ -1,0 +1,27 @@
+{
+    "name": "pts/servicios",
+    "description": "Nueva forma de hacer servicios",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "RomanFvckYeah",
+            "email": "romantapia456@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "José Carlos Ortiz",
+            "email": "jose.ortiz@ptsanmiguelense.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "lcobucci/jwt": "^4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "configuration\\":"./config",
+            "models\\":"./models"
+        }
+    }
+}
