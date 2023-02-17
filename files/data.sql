@@ -101,3 +101,73 @@
     
     -- UPDATE LECTOR
     -- DELETE LECTOR
+
+-- METODOS LIBROS
+    -- LOOK FOR LIBRO
+    SELECT 
+        1 existe
+    FROM libros 
+    WHERE titulo = ''
+
+    -- GET LIBROS
+    SELECT
+        libros.id_libro id_libro, libros.titulo titulo, libros.fecha_publicacion publicacion, libros.paginas paginas, libros.isbn isbn,
+        generos.genero genero, 
+        editoriales.editorial editorial,
+        autores.autor autor,
+        stock.cantidad stock
+    FROM libros
+    INNER JOIN generos ON libros.id_genero = generos.id_genero
+    INNER JOIN editoriales ON libros.id_editorial = editoriales.id_editorial
+    INNER JOIN autores ON libros.id_autor = autores.id_autor
+    INNER JOIN stock ON libros.id_libro = stock.id_libro
+
+
+    -- GET LIBRO
+    SELECT
+        libros.id_libro id_libro, libros.titulo titulo, libros.fecha_publicacion publicacion, libros.paginas paginas, libros.isbn isbn,
+        generos.genero genero, 
+        editoriales.editorial editorial,
+        autores.autor autor,
+        stock.cantidad stock
+    FROM libros
+    INNER JOIN generos ON libros.id_genero = generos.id_genero
+    INNER JOIN editoriales ON libros.id_editorial = editoriales.id_editorial
+    INNER JOIN autores ON libros.id_autor = autores.id_autor
+    INNER JOIN stock ON libros.id_libro = stock.id_libro
+    WHERE libros.id_libro = ''
+
+-- LOGIN
+
+    -- BUSQUEDA DEL USUARIO
+    SELECT
+        usuarios.id_usuario id_usuario, usuarios.contrasena contrasena, usuarios.usuario usuario, usuarios.email correo,
+        CONCAT(personas.nombres,' ',personas.a_paterno,' ',personas.a_materno) nombre,
+        perfiles.perfil perfil
+    FROM usuarios
+    INNER JOIN personas ON usuarios.id_persona = personas.id_persona
+    INNER JOIN perfiles ON usuarios.id_perfil = perfiles.id_perfil
+    WHERE usuarios.email = ''
+
+    -- EXTRACCION DEL MENU EN BASE AL USUARIO
+
+    SELECT
+        menu.recurso recurso, menu.url ruta, menu.icono icono
+    FROM usuarios
+    INNER JOIN perfiles ON usuarios.id_perfil = perfiles.id_perfil
+    INNER JOIN perfiles_menu ON usuarios.id_perfil = perfiles_menu.id_perfil
+    INNER JOIN menu ON perfiles_menu.id_menu = menu.id_menu
+    WHERE usuarios.id_usuario = ''
+
+-- RESET PASSWORD
+    -- BUSQUEDA DEL USUAIRO
+    SELECT
+        id_usuario, email, contrasena
+    FROM usuarios
+    WHERE email = ''
+
+    -- RESET PASSWORD
+    UPDATE usuarios
+    SET contrasena = ''
+    WHERE id_usuario = ''
+
