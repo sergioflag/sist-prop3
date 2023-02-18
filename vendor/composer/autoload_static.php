@@ -18,6 +18,7 @@ class ComposerStaticIniteb80ed4ec7b0ab6fe7efa7539d5e5a0e
         'P' => 
         array (
             'Psr\\Clock\\' => 10,
+            'PHPMailer\\PHPMailer\\' => 20,
         ),
         'L' => 
         array (
@@ -38,6 +39,10 @@ class ComposerStaticIniteb80ed4ec7b0ab6fe7efa7539d5e5a0e
         'Psr\\Clock\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/clock/src',
+        ),
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
         'Lcobucci\\JWT\\' => 
         array (

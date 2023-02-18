@@ -17,7 +17,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         break;
 
     case 'POST':
-        echo json_encode(usuario::guardar($request,JSON_UNESCAPED_UNICODE));
+        echo json_encode(usuario::guardar($request));
         break;
 
     case 'PUT':

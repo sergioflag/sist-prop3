@@ -9,6 +9,7 @@ return array(
     'models\\' => array($baseDir . '/models'),
     'configuration\\' => array($baseDir . '/config'),
     'Psr\\Clock\\' => array($vendorDir . '/psr/clock/src'),
+    'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'Lcobucci\\JWT\\' => array($vendorDir . '/lcobucci/jwt/src'),
     'Lcobucci\\Clock\\' => array($vendorDir . '/lcobucci/clock/src'),
 );

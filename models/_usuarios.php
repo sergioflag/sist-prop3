@@ -2,9 +2,15 @@
 
 namespace models;
 
-use configuration\authToken as tk;
+# archivos de Configuracion
 use configuration\db as db;
 use configuration\algorithms as algo;
+use configuration\_mailer as mail;
+
+# archivos de PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class _usuarios{
 
@@ -75,8 +81,16 @@ class _usuarios{
                 VALUES((SELECT MAX(id_persona) FROM personas),'$data->id_perfil','$data->usuario','$data->email','$data->contrasena')";
 
                 if(db::stored_procedure($queries)){
-                    $output['error'] = false;
-                    $output['message'] = "El usuario se registró con éxito";
+                    $query = "SELECT MAX(id_usuario) id_usuario FROM usuarios";
+                    $_id = db::query($query);
+
+                    if(self::enviar_correo($data,$_id[0]->id_usuario)){
+                        $output['error'] = false;
+                        $output['message'] = "El usuario se registró con éxito";
+                    }else{
+                        $output['message'] = "Hubo un error con el envio del correo de confirmacion";
+                    }
+
                 }else{
                     $output['message'] = "Hubo un error en el registro";
                 }
@@ -156,6 +170,53 @@ class _usuarios{
         return $output;
 
     }
+
+    public static function enviar_correo($data,$_id){
+
+        #Instancia de conexión
+        $mail = new PHPMailer(true);
+
+        try {
+            #Congiguraciones del servidor
+            $mail->SMTPDebug = SMTP::DEBUG_SERVER; //Enable verbose debug output
+            $mail->isSMTP(); //Send using SMTP
+            $mail->Host       = 'smtp.gmail.com'; //Set the SMTP server to send through
+            $mail->SMTPAuth   = true; //Enable SMTP authentication
+            $mail->Username   = 'sergiofol1093@gmail.com'; //SMTP username
+            $mail->Password   = 'guxnjgozzcgoonod'; //SMTP password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; //Enable implicit TLS encryption
+            $mail->Port       = 465;
+
+            #Datos del emisor y receptor
+            $mail->setFrom("sergiofol1093@gmail.com",'Administrador');
+            $mail->addAddress($data->email,"{$data->nombres} {$data->a_paterno}");
+
+            #Configuracion del contenido de envío
+            $mail->isHTML(true);
+            $mail->Subject = "Confirmacion de creacion cuenta de usuario";
+            $mail->AltBody = "Su cuenta de usuario ha sido creada";
+            $mail->Body = "
+            <div>
+                <h3>Hola {$data->nombres} {$data->a_paterno}</h3>
+                <p>Te informamos que tu cuenta de usuario ha sido creada. Tu id es: {$_id}</p>
+            </div>
+            ";
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+
+          
+
+        
+
+
+
+    }
+
 
 }
 
