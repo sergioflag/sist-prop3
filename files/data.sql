@@ -147,7 +147,7 @@
     FROM usuarios
     INNER JOIN personas ON usuarios.id_persona = personas.id_persona
     INNER JOIN perfiles ON usuarios.id_perfil = perfiles.id_perfil
-    WHERE usuarios.email = ''
+    WHERE usuarios.email = '' AND perfiles.id_perfil = 1
 
     -- EXTRACCION DEL MENU EN BASE AL USUARIO
 
@@ -161,10 +161,12 @@
 
 -- RESET PASSWORD
     -- BUSQUEDA DEL USUAIRO
-    SELECT
-        id_usuario, email, contrasena
+    SELECT 
+        usuarios.id_usuario id_usuario, usuarios.email email, usuarios.contrasena contrasena,
+        CONCAT(personas.nombres,' ',personas.a_paterno,' ',personas.a_materno) nombre
     FROM usuarios
-    WHERE email = ''
+    INNER JOIN personas ON usuarios.id_persona = personas.id_persona
+    WHERE usuarios.email = 'sergio@mail.com'
 
     -- RESET PASSWORD
     UPDATE usuarios
