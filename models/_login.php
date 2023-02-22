@@ -65,13 +65,16 @@ class _login{
 
         $output['error'] = true;
 
-        if(tk::Check($_token)){
-            $output['error'] = false;
-            $output['data'] = tk::GetData($_token);
+        if(isset($_token)){
+            if(tk::Check($_token)){
+                $output['error'] = false;
+                $output['data'] = tk::GetData($_token);
+            }else{
+                $output['message'] = "El token ha expirado";
+            }
         }else{
-            $output['message'] = "El token ha expirado";
+            $output['message'] = "No hay token";            
         }
-
         return $output;
     }
 
@@ -174,7 +177,5 @@ class _login{
 
 
 }
-
-
 
 ?>
