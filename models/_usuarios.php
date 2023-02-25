@@ -18,7 +18,7 @@ class _usuarios{
 
         $query = "SELECT
             personas.id_persona id_persona, personas.nombres nombres, personas.a_paterno a_paterno, personas.a_materno a_materno, personas.telefono telefono, personas.f_nacimiento f_nacimiento,
-            usuarios.id_usuario id_usuario, usuarios.usuario usuario, usuarios.email email,
+            usuarios.id_usuario id_usuario, usuarios.usuario usuario, usuarios.email email, usuarios.status estado,
             perfiles.id_perfil id_perfil, perfiles.perfil perfil
         FROM usuarios
         INNER JOIN personas ON usuarios.id_persona = personas.id_persona
@@ -42,7 +42,7 @@ class _usuarios{
 
         $query = "SELECT
             personas.id_persona id_persona, personas.nombres nombres, personas.a_paterno a_paterno, personas.a_materno a_materno, personas.telefono telefono, personas.f_nacimiento f_nacimiento,
-            usuarios.id_usuario id_usuario, usuarios.usuario usuario, usuarios.email email,
+            usuarios.id_usuario id_usuario, usuarios.usuario usuario, usuarios.email email, usuarios.status estado
             perfiles.id_perfil id_perfil, perfiles.perfil perfil
         FROM usuarios
         INNER JOIN personas ON usuarios.id_persona = personas.id_persona
@@ -167,6 +167,8 @@ class _usuarios{
         return $output;
 
     }
+
+    // NA
 
     public static function enviar_correo($data,$_id){
 

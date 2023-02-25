@@ -146,6 +146,8 @@ const usuariosComponent = {
         btnEliminar:function(item){
             item = JSON.parse(JSON.stringify(item))
             const index = this.listaUsuarios.findIndex((element)=>element.id_usuario === item.id_usuario)
+            let id = item.id_usuario
+
             swal({
                 icon:'warning',
                 title:'¿Estás seguro de eliminar el registro?',
@@ -157,17 +159,51 @@ const usuariosComponent = {
             .then((eliminar)=>{
 
                 if(eliminar){
-                    this.listaUsuarios[index]=item
-                    this.listaUsuarios.splice(index,1)
-                    swal('El usuario se eliminó correctamente',{
-                        icon:'success'
+
+                    let url = `http://localhost/brian/sist-prop3/controllers/usuarios/_api.php?id=${id}`
+
+                    
+                    fetch(url,{
+                        method:'DELETE',
+                        headers:{
+                            'content-type':'application/json'
+                        }
                     })
-                    this.btnCancelar()
+                    .then(res=>res.json())
+                    .then((response)=>{
+
+                        //console.log(response.error)
+
+                        let error = response.error
+                        let message = response.message
+                        
+                        if(error === false){
+
+                            this.listaUsuarios[index]=item
+                            this.listaUsuarios.splice(index,1)
+
+                            swal(message,{
+                                icon:'success'
+                            })
+                            this.btnCancelar()
+                        }else{
+                            swal(message,{
+                                icon:'error'
+                            })
+                            this.btnCancelar()
+
+                        }
+
+                    })
+
+                    
+
                 }else{
                     this.btnCancelar()
                 }
+                
             })
-            console.log(item)
+            //console.log(item)
         },
         selectCard:function(item){
             this.showList = false,
@@ -197,19 +233,40 @@ const usuariosComponent = {
                     text:'Los campos están incompletos'
                 })
             }else{
-                this.listaUsuarios.push(item)
-                swal({
-                    icon:'success',
-                    text:'El usuario se guardó exitosamente'
+
+                fetch('http://localhost/brian/sist-prop3/controllers/usuarios/_api.php',{
+                    method:'POST',
+                    body:JSON.stringify(item),
+                    headers:{
+                        'content-type':'json/application'
+                    }
                 })
-                this.clearForm()
-                this.btnCancelar()
+                .then(res=>res.json())
+                .then((response)=>{
+                    console.log(response)
+                    this.listaUsuarios.push(item)
+                    if(response.error === false){
+                        swal(response.message,{
+                            icon:'success'
+                        })
+                        this.clearForm()
+                        this.btnCancelar()
+
+                    }else{
+                        swal(response.message,{
+                            icon:'error'
+                        })
+                        this.clearForm()
+                        this.btnCancelar()
+                    }
+                })
             }
         },
         actualizarUsuario:function(){
             
             let item = JSON.parse(JSON.stringify(this.userForm))
             const index = this.listaUsuarios.findIndex((element)=>element.id_usuario === item.id_usuario)
+            let id = item.id_usuario
 
             const formData = Object.values(item)
 
@@ -233,24 +290,50 @@ const usuariosComponent = {
                     buttons:true,
                     dangerMode:true
                 })
-                
-                .then((guardar)=>{
-                    if(guardar){
-                        this.listaUsuarios[index]=item
-                        swal('Los cambios se han efectuado correctamente',{
-                            icon:'success'
+                .then((update)=>{
+                    if(update){
+
+                        //console.log(item)
+                        
+                        fetch(`http://localhost/brian/sist-prop3/controllers/usuarios/_api.php?id=${id}`,{
+                            method:'PUT',
+                            body:JSON.stringify(item),
+                            headers:{
+                                'content-type':'application/json'
+                            }
                         })
-                        this.clearForm()
-                        this.btnCancelar()
+                        .then(res=>res.json())
+                        .then((response)=>{
+
+                            //console.log(response)
+
+                            
+                            if(response.error === false){
+                                swal(response.message,{
+                                    icon:'success'
+                                })
+                                this.clearForm()
+                                this.btnCancelar
+                            }else{
+                                swal(response.message,{
+                                    icon:'warning'
+                                })
+                                this.btnCancelar()
+                                this.clearForm()
+                            }
+                            
+                        })
+                        
+
                     }else{
-                        this.clearForm()
                         this.btnCancelar()
+                        this.clearForm()
                     }
+                    this.btnCancelar()
+                    this.clearForm()
                 })
+
             }
-
-
-
 
         },
         btnActualizarContrasena:function(){
@@ -272,11 +355,35 @@ const usuariosComponent = {
                     dangerMode:true
                 })
                 
-                .then((guardar)=>{
-                    if(guardar){
-                        console.log(item)
-                        swal('Su contraseña se ha actualizado correctamente, revise su correo electrónico',{
-                            icon:'success'
+                .then((actualizar)=>{
+                    if(actualizar){
+                        
+                        //console.log(item)
+                        
+                        fetch('http://localhost/brian/sist-prop3/controllers/login/_api.php',{
+                            method:'PUT',
+                            body:JSON.stringify(item),
+                            headers:{
+                                'content-type':'application/json'
+                            }
+                        })
+                        .then(res=>res.json())
+                        .then((response)=>{
+                            console.log(response)
+
+                            if(response.error === false){
+                                swal(response.message,{
+                                    icon:'success'
+                                })
+                                this.clearPasswordForm()
+                                this.btnCancelar()
+                            }else{
+                                swal(response.message,{
+                                    icon:'error'
+                                })
+                                this.clearPasswordForm()
+                                this.btnCancelar()
+                            }
                         })
                         this.clearPasswordForm()
                         this.btnCancelar()

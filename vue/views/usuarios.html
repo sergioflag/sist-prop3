@@ -42,7 +42,8 @@
 
                     <div 
                     v-for="item in listaUsuarios"
-                    class="bg-indigo-600 rounded-md p-2 flex flex-col justify-between gap-4">
+                    class="bg-indigo-600 rounded-md p-2 flex flex-col justify-between gap-4"
+                    :class="{'bg-rose-800':item.estado ==='0'}">
 
                     <div class="flex flex-col" @click="selectCard(item)">
 

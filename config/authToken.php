@@ -33,7 +33,7 @@ class authToken {
             ): Builder => $builder
                 ->issuedBy('localhost')
                 ->permittedFor(self::Aud())
-                ->expiresAt($issuedAt->modify('+1 minutes'))
+                ->expiresAt($issuedAt->modify('+180 minutes'))
                 ->withClaim('data', $data)
         );
 
