@@ -15,7 +15,8 @@ const menuComponent = {
             usuario:{
                 nombre:'',
                 perfil:''
-            }
+            },
+            titulo:'MyLibrary'
         }
     },
     methods:{
@@ -55,6 +56,8 @@ const menuComponent = {
                             icon:'warning',
                             text:response.message
                         })
+                        localStorage.removeItem('token')
+                        window.location.replace('http://localhost/brian/sist-prop3/vue/views/login.html')
                     }
                 })
             }else{
@@ -69,15 +72,257 @@ const menuComponent = {
     created:function(){
         this.getMenu()
         //this.pathValidate(this.menu)
+        //console.log(this.listaUsuarios)
     }
 }
 
 const usuariosComponent = {
     template:'#usuarios-template',
     components:{
-        'menu-component':menuComponent
+        'menu-component':menuComponent,
+    },
+    data:function(){
+        return {
+            listaUsuarios:[],
+            showList:false,
+            updateForm:false,
+            updatePassword:false,
+            action:'',
+            userForm:{
+                nombres:'',
+                a_paterno:'',
+                a_materno:'',
+                telefono:'',
+                f_nacimiento:'',
+                id_perfil:'',
+                usuario:'',
+                email:'',
+                contrasena:''
+            },
+            passwordForm:{
+                email:'',
+                contrasena:'',
+                nueva_contrasena:''
+            },
+            profiles:[
+                {id_perfil:1,perfil:'administrador'},
+                {id_perfil:2,perfil:'recepcionista'},
+            ]
+        }
+    },
+    methods:{
+        getUsuarios:function(){
+            fetch('http://localhost/brian/sist-prop3/controllers/usuarios/_api.php',{
+                method:'GET',
+                headers:{
+                    'content-type':'application/json'
+                }
+            })
+            .then(res=>res.json())
+            .then((response)=>{
+                console.log(response)
+                this.listaUsuarios = response.usuarios
+            })
+        },
+        btnNuevo:function(){
+            this.showList = false,
+            this.updateForm = false,
+            this.updatePassword = false
+            this.action = 'Registrar nuevo usuario'
+        },
+        btnCancelar:function(){
+            this.showList = true,
+            this.updateForm = false,
+            this.updatePassword = false
+            this.action = 'Lista de usuarios'
+            this.clearForm()
+        },
+        actualizarContrasena:function(){
+            this.showList = false,
+            this.updateForm = false,
+            this.updatePassword = true
+            this.action = 'Actualizar contraseña'
+        },
+        btnEliminar:function(item){
+            item = JSON.parse(JSON.stringify(item))
+            const index = this.listaUsuarios.findIndex((element)=>element.id_usuario === item.id_usuario)
+            swal({
+                icon:'warning',
+                title:'¿Estás seguro de eliminar el registro?',
+                text:'El cambio es irreversible',
+                buttons:true,
+                dangerMode:true
+            })
+            
+            .then((eliminar)=>{
+
+                if(eliminar){
+                    this.listaUsuarios[index]=item
+                    this.listaUsuarios.splice(index,1)
+                    swal('El usuario se eliminó correctamente',{
+                        icon:'success'
+                    })
+                    this.btnCancelar()
+                }else{
+                    this.btnCancelar()
+                }
+            })
+            console.log(item)
+        },
+        selectCard:function(item){
+            this.showList = false,
+            this.updateForm = true,
+            this.updatePassword = false
+            this.action = 'Actualizar usuario'
+            item = JSON.parse(JSON.stringify(item))
+            this.userForm = item
+    
+            console.log(item)
+        },
+        guardarUsuario:function(){
+            let item = JSON.parse(JSON.stringify(this.userForm))
+            console.log(item)
+                        
+            const formData = Object.values(item)
+
+            if(item.id_perfil === 1 || item.id_perfil === '1'){
+                item.perfil = 'administrador'
+            }else{
+                item.perfil = 'recepcionista'
+            }
+            
+            if(formData.includes('')){
+                swal({
+                    icon:'warning',
+                    text:'Los campos están incompletos'
+                })
+            }else{
+                this.listaUsuarios.push(item)
+                swal({
+                    icon:'success',
+                    text:'El usuario se guardó exitosamente'
+                })
+                this.clearForm()
+                this.btnCancelar()
+            }
+        },
+        actualizarUsuario:function(){
+            
+            let item = JSON.parse(JSON.stringify(this.userForm))
+            const index = this.listaUsuarios.findIndex((element)=>element.id_usuario === item.id_usuario)
+
+            const formData = Object.values(item)
+
+            if(item.id_perfil === 1 || item.id_perfil === '1'){
+                item.perfil = 'administrador'
+            }else{
+                item.perfil = 'recepcionista'
+            }
+
+            if(formData.includes('')){
+                swal({
+                    icon:'warning',
+                    text:'Los campos están incompletos'
+                })
+            }else{
+
+                swal({
+                    icon:'warning',
+                    title:'¿Deseas efectuar los cambios?',
+                    text:'Los cambiós aplicados serán registrados una vez aceptada la opción',
+                    buttons:true,
+                    dangerMode:true
+                })
+                
+                .then((guardar)=>{
+                    if(guardar){
+                        this.listaUsuarios[index]=item
+                        swal('Los cambios se han efectuado correctamente',{
+                            icon:'success'
+                        })
+                        this.clearForm()
+                        this.btnCancelar()
+                    }else{
+                        this.clearForm()
+                        this.btnCancelar()
+                    }
+                })
+            }
+
+
+
+
+        },
+        btnActualizarContrasena:function(){
+            let item = JSON.parse(JSON.stringify(this.passwordForm))
+            const formData = Object.values(item)
+
+            if(formData.includes('')){
+                swal({
+                    icon:'warning',
+                    text:'Los campos están incompletos'
+                })
+            }else{
+
+                swal({
+                    icon:'warning',
+                    title:'¿Deseas efectuar los cambios?',
+                    text:'Los cambios quedarán registrados de forma permanente',
+                    buttons:true,
+                    dangerMode:true
+                })
+                
+                .then((guardar)=>{
+                    if(guardar){
+                        console.log(item)
+                        swal('Su contraseña se ha actualizado correctamente, revise su correo electrónico',{
+                            icon:'success'
+                        })
+                        this.clearPasswordForm()
+                        this.btnCancelar()
+                    }else{
+                        this.clearPasswordForm()
+                        this.btnCancelar()
+                    }
+                })
+            }
+
+            this.clearPasswordForm()
+        },
+        clearForm:function(){
+
+            this.userForm = {
+                nombres:'',
+                a_paterno:'',
+                a_materno:'',
+                telefono:'',
+                f_nacimiento:'',
+                id_perfil:'',
+                usuario:'',
+                email:'',
+                contrasena:''
+             }
+        },
+        clearPasswordForm:function(){
+            this.passwordForm = {
+                email:'',
+                contrasena:'',
+                nueva_contrasena:''
+            }
+        }
+
+    },
+    created(){
+        this.showList = true,
+        this.updateForm = false,
+        this.updatePassword = false
+        this.action = 'Lista de usuarios'
+        this.getUsuarios()
+        //console.log(this.listaUsuarios.length)
     }
+
 }
+
 
 const lectoresComponent = {
     template:'#lectores-template',

@@ -17,12 +17,12 @@ class _usuarios{
     public static function lista_usuarios(){
 
         $query = "SELECT
-                    usuarios.id_usuario id, usuarios.email email, usuarios.status estado,
-                    CONCAT(personas.nombres,' ',personas.a_paterno,' ',personas.a_materno) nombre,
-                    perfiles.perfil perfil
-                FROM usuarios
-                INNER JOIN personas ON usuarios.id_persona = personas.id_persona
-                INNER JOIN perfiles ON usuarios.id_perfil = perfiles.id_perfil ";
+            personas.id_persona id_persona, personas.nombres nombres, personas.a_paterno a_paterno, personas.a_materno a_materno, personas.telefono telefono, personas.f_nacimiento f_nacimiento,
+            usuarios.id_usuario id_usuario, usuarios.usuario usuario, usuarios.email email,
+            perfiles.id_perfil id_perfil, perfiles.perfil perfil
+        FROM usuarios
+        INNER JOIN personas ON usuarios.id_persona = personas.id_persona
+        INNER JOIN perfiles ON usuarios.id_perfil = perfiles.id_perfil";
 
         $usuarios = db::query($query);
 
@@ -41,13 +41,13 @@ class _usuarios{
     public static function usuario($_id){
 
         $query = "SELECT
-                    usuarios.id_usuario id, usuarios.email email, usuarios.status estado,
-                    CONCAT(personas.nombres,' ',personas.a_paterno,' ',personas.a_materno) nombre,
-                    perfiles.perfil perfil
-                FROM usuarios
-                INNER JOIN personas ON usuarios.id_persona = personas.id_persona
-                INNER JOIN perfiles ON usuarios.id_perfil = perfiles.id_perfil
-                WHERE usuarios.id_usuario = '$_id'";
+            personas.id_persona id_persona, personas.nombres nombres, personas.a_paterno a_paterno, personas.a_materno a_materno, personas.telefono telefono, personas.f_nacimiento f_nacimiento,
+            usuarios.id_usuario id_usuario, usuarios.usuario usuario, usuarios.email email,
+            perfiles.id_perfil id_perfil, perfiles.perfil perfil
+        FROM usuarios
+        INNER JOIN personas ON usuarios.id_persona = personas.id_persona
+        INNER JOIN perfiles ON usuarios.id_perfil = perfiles.id_perfil
+        WHERE usuarios.id_usuario = '$_id'";
 
         $usuarios = db::query($query);
 
@@ -84,12 +84,9 @@ class _usuarios{
                     $query = "SELECT MAX(id_usuario) id_usuario FROM usuarios";
                     $_id = db::query($query);
 
-                    if(self::enviar_correo($data,$_id[0]->id_usuario)){
-                        $output['error'] = false;
-                        $output['message'] = "El usuario se registró con éxito";
-                    }else{
-                        $output['message'] = "Hubo un error con el envio del correo de confirmacion";
-                    }
+                    $output['error'] = false;
+                    $output['message'] = "El usuario se registró con éxito";
+                    $output['id_usuario'] = $_id[0]->id_usuario;
 
                 }else{
                     $output['message'] = "Hubo un error en el registro";

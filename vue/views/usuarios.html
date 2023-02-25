@@ -8,10 +8,11 @@
 <body>
 
     <!--APP-->
-    <div id="app" class="w-screen h-screen bg-indigo-100">
+    <div id="app" class="w-screen h-screen bg-indigo-100 flex flex-col gap-4">
         <title>usuarios</title>
-        <div class="flex flex-col gap-4">
-            <usuarios-component></usuarios-component>
+
+        <usuarios-component></usuarios-component>
+
         </div>
     </div>
     <!--APP-->
@@ -19,14 +20,259 @@
     <!--TEMPLATES-->
 
     <script type="text/html" id="usuarios-template">
-        <div class="text-xl text-indigo-800">Usuarios</div>
+
         <menu-component></menu-component>
+
+        <!--LISTA DE USUARIOS-->
+        <div v-if ="showList && !updatePassword" class="rounded-md p-8 bg-indigo-500 flex flex-col gap-4 mx-4">
+
+            <div class="flex items-center justify-between">
+
+                <span class="text-indigo-100 text-xl font-bold">{{action}}</span>
+
+                <button @click="btnNuevo" class="rounded-md bg-indigo-800 p-4 flex gap-4 items-center hover:bg-emerald-800">
+                    <i class="fa-solid fa-user-plus text-indigo-100 text-md font-bold"></i>
+                    <span class="text-indigo-100 text-md font-bold">Nuevo</span>
+                </button>
+
+            </div>
+
+            <div class="flex flex-col gap-4 items-center justify-between p-4">
+
+                <div class="w-full bg-indigo-300 rounded-md grid grid-cols-3 gap-4 p-4">
+
+                    <div 
+                    v-for="item in listaUsuarios"
+                    class="bg-indigo-600 rounded-md p-2 flex flex-col justify-between gap-4">
+
+                    <div class="flex flex-col" @click="selectCard(item)">
+
+                        <div class="flex flex-col gap-2">
+    
+                            <span class="text-indigo-100 text-lg font-semibold">Información del usuario</span>
+    
+                            <div class="flex items-center justify-start gap-2 p-2">
+    
+                                <div class="rounded-full w-16 h-16 bg-indigo-300 p-2 flex items-center justify-center">
+                                    <span class="text-indigo-600 text-md font-bold">{{item.nombres[0]}}</span>
+                                </div>
+                                <div class="flex flex-col">
+    
+                                    <div class="flex gap-2">
+                                        <label for="" class="text-indigo-100 text-md font-bold">Nombre:</label>
+                                        <label for="" class="text-indigo-100 text-md">{{item.nombres}} {{item.a_paterno}} {{item.a_materno}}</label>
+                                    </div>
+    
+                                    <div class="flex gap-2">
+                                        <label for="" class="text-indigo-100 text-md font-bold">Teléfono:</label>
+                                        <label for="" class="text-indigo-100 text-md">{{item.telefono}}</label>
+                                    </div>
+    
+                                    <div class="flex gap-2">
+                                        <label for="" class="text-indigo-100 text-md font-bold">Fecha de nacimiento:</label>
+                                        <label for="" class="text-indigo-100 text-md">{{item.f_nacimiento}}</label>
+                                    </div>
+    
+                                </div>
+                            </div>
+                        </div>
+    
+                        <hr class="text-indigo-100 border-1">
+    
+                        <div class="flex flex-col gap-2">
+    
+                            <span class="text-indigo-100 text-lg font-semibold">Detalle del perfil</span>
+    
+                            <div class="flex items-center justify-start gap-2 p-2">
+    
+                                <div class="flex flex-col">
+    
+                                    <div class="flex gap-2">
+                                        <label for="" class="text-indigo-100 text-md font-bold">Perfil:</label>
+                                        <label for="" class="text-indigo-100 text-md">{{item.perfil}}</label>
+                                    </div>
+    
+                                    <div class="flex gap-2">
+                                        <label for="" class="text-indigo-100 text-md font-bold">Usuario:</label>
+                                        <label for="" class="text-indigo-100 text-md">{{item.usuario}}</label>
+                                    </div>
+    
+                                    <div class="flex gap-2">
+                                        <label for="" class="text-indigo-100 text-md font-bold">Correo electrónico:</label>
+                                        <label for="" class="text-indigo-100 text-md">{{item.email}}</label>
+                                    </div>
+    
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                        <div class="flex items-center justify-end gap-4">
+                            <button @click.prevent="actualizarContrasena" class="rounded-md p-2 text-indigo-100 bg-indigo-800 hover:bg-emerald-800">Actualizar Contraseña</button>
+                            <button @click.prevent="btnEliminar(item)" class="rounded-md p-2 text-indigo-100 bg-indigo-800 hover:bg-rose-800">Eliminar</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!--FORMULARIO DE USUARIO-->
+        <div v-if="!showList && !updatePassword" class="rounded-md p-8 bg-indigo-500 flex flex-col gap-4 mx-4">
+
+            <div class="flex items-center justify-between">
+                <span class="text-indigo-100 text-xl font-bold">{{action}}</span>
+            </div>
+
+            <form class="bg-indigo-600 rounded-md p-4 flex flex-col gap-4">
+
+                <div class="flex flex-col gap-4">
+
+                    <span class="text-indigo-100 text-lg font-bold">Información del usuario</span>
+
+                    <div class="flex items-center gap-4 ">
+    
+                        <div class=" w-full flex flex-col gap-2">
+                            <label for="" class="text-indigo-100 font-regular text-md">Nombre o nombres: *</label>
+                            <input v-model="userForm.nombres" type="text" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. John Manuel">
+                        </div>
+    
+                        <div class=" w-full flex flex-col gap-2">
+                            <label for="" class="text-indigo-100 font-regular text-md">Apellido paterno: *</label>
+                            <input v-model="userForm.a_paterno" type="text" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. Rüdigger">
+                        </div>
+    
+                        <div class=" w-full flex flex-col gap-2">
+                            <label for="" class="text-indigo-100 font-regular text-md">Apellido materno (opcional):</label>
+                            <input v-model="userForm.a_materno" type="text" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. Sánchez">
+                        </div>
+    
+                    </div>
+    
+                    <div class="flex items-center gap-4 ">
+    
+                        <div class=" w-full flex flex-col gap-2">
+                            <label for="" class="text-indigo-100 font-regular text-md">Teléfono *</label>
+                            <input v-model="userForm.telefono" type="tel" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. +52 485 482 2388">
+                        </div>
+    
+                        <div class=" w-full flex flex-col gap-2">
+                            <label for="" class="text-indigo-100 font-regular text-md">Fecha de nacimiento: *</label>
+                            <input v-model="userForm.f_nacimiento" type="date" class="text-indigo-800 bg-indigo-100 rounded-md p-2">
+                        </div>
+    
+                    </div>
+                </div>
+
+                <hr class="border-1 text-indigo-10">
+
+                <div class="flex flex-col gap-4">
+
+                    <span class="text-indigo-100 text-lg font-bold">Información del usuario</span>
+
+                    <div class="flex items-center gap-4 ">
+    
+                        <div class=" w-full flex flex-col gap-2">
+                            <label for="" class="text-indigo-100 font-regular text-md">Tipo de perfil: *</label>
+                            <select v-model="userForm.id_perfil" class="text-indigo-800 bg-indigo-100 rounded-md p-2">
+                                <option v-for="item in profiles" :value="item.id_perfil">{{item.perfil}}</option>
+                            </select>
+                        </div>
+    
+                        <div class=" w-full flex flex-col gap-2">
+                            <label for="" class="text-indigo-100 font-regular text-md">Usuario: *</label>
+                            <input v-model="userForm.usuario" type="text" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. androide18">
+                        </div>
+    
+                        <div class=" w-full flex flex-col gap-2">
+                            <label for="" class="text-indigo-100 font-regular text-md">Correo electrónico: *</label>
+                            <input v-model="userForm.email" type="email" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. john@mail.com">
+                        </div>
+    
+                        <div v-if="!updateForm" class=" w-full flex flex-col gap-2">
+                            <label for="" class="text-indigo-100 font-regular text-md">contraseña: *</label>
+                            <input v-model="userForm.contrasena" type="password" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. xxxxxxxxxx">
+                        </div>
+    
+                    </div>
+
+                </div>
+
+                <div class="flex items-center justify-between">
+
+                    <div class="flex">
+                        <button @click.prevent="btnCancelar" class="hover:bg-amber-800 w-32 rounded-md p-2 bg-indigo-800 text-indigo-100">Cancelar</button>
+                    </div>
+
+                    <div class="flex">
+                        <button @click.prevent="guardarUsuario" v-if="!updateForm" class="hover:bg-emerald-800 w-32 rounded-md p-2 bg-indigo-800 text-indigo-100">Guardar</button>
+                        <button @click.prevent="actualizarUsuario" v-if="updateForm" class="hover:bg-emerald-800 w-32 rounded-md p-2 bg-indigo-800 text-indigo-100">Actualizar</button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <!--FORMULARIO DE EDITAR CONTRASEÁ-->
+        <div v-if="updatePassword && !showList" class="rounded-md p-8 bg-indigo-500 flex flex-col gap-4 mx-4 items-center justify-center">
+
+            
+            <form class="bg-indigo-600 rounded-md p-4 flex flex-col gap-4 w-fit">
+
+                <div class="flex">
+                    <span class="text-indigo-100 text-xl font-bold">{{action}}</span>
+                </div>
+
+                <div class="flex">
+                    <span class="text-indigo-100 text-lg font-regular text-center">Ingrese sus datos para actualizar su cuenta de usuario</span>
+                </div>
+                
+                <div class="flex flex-col items-center gap-4 ">
+
+                    <div class=" w-full flex flex-col gap-2">
+                        <label for="" class="text-indigo-100 font-regular text-md">Correo electrónico: *</label>
+                        <input v-model="passwordForm.email" type="text" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. name@mail.com">
+                    </div>
+
+                    <div class=" w-full flex flex-col gap-2">
+                        <label for="" class="text-indigo-100 font-regular text-md">Contraseña actual: *</label>
+                        <input v-model="passwordForm.contrasena" type="text" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. XXXXXXXXXX">
+                    </div>
+
+                    <div class=" w-full flex flex-col gap-2">
+                        <label for="" class="text-indigo-100 font-regular text-md">Nueva Contraseña: *</label>
+                        <input  v-model="passwordForm.nueva_contrasena" type="text" class="text-indigo-800 bg-indigo-100 rounded-md p-2" placeholder="Ex. XXXXXXXXXX">
+                    </div>
+
+                </div>
+
+                <div class="flex items-center justify-between">
+
+                    <div class="flex">
+                        <button @click.prevent="btnCancelar" class="hover:bg-amber-800 w-32 rounded-md p-2 bg-indigo-800 text-indigo-100">Cancelar</button>
+                    </div>
+
+                    <div class="flex">
+                        <button @click.prevent="btnActualizarContrasena" class="hover:bg-emerald-800 w-32 rounded-md p-2 bg-indigo-800 text-indigo-100">Guardar</button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
     </script>
 
     <script type="text/html" id="menu-template">
         <div class="flex items-center justify-between bg-indigo-500 mx-4 rounded-md py-2 px-8">
             <div class="flex">
-                <div class="text-xl text-indigo-900 font-bold">MiApp</div>
+                <div class="text-xl text-indigo-900 font-bold">{{titulo}}</div>
             </div>
             <div class="flex items-center justify-center gap-4">
                 <a v-for="item in menu" 
@@ -63,6 +309,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/55321e7608.js" crossorigin="anonymous"></script>
     <script src="../js/components.js"></script>
     <script src="../js/app.js"></script>
 </body>
