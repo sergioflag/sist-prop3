@@ -144,13 +144,13 @@ class _login{
             $mail->isSMTP(); //Send using SMTP
             $mail->Host       = 'smtp.gmail.com'; //Set the SMTP server to send through
             $mail->SMTPAuth   = true; //Enable SMTP authentication
-            $mail->Username   = 'sergiofol1093@gmail.com'; //SMTP username
-            $mail->Password   = 'guxnjgozzcgoonod'; //SMTP password
+            $mail->Username   = 'usuariodebrian@gmail.com'; //SMTP username tu email Brian
+            $mail->Password   = 'tokendebrianphpmailer'; //SMTP password Tu password (que extrajiste anoche PHPMailer)
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; //Enable implicit TLS encryption
             $mail->Port       = 465;
 
             #Datos del emisor y receptor
-            $mail->setFrom("sergiofol1093@gmail.com",'Administrador');
+            $mail->setFrom("usuariodebrian@gmail.com",'Administrador');
             $mail->addAddress($data->email,"{$data->nombre}");
 
             #Configuracion del contenido de envío

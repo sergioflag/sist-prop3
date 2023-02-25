@@ -168,54 +168,6 @@ class _usuarios{
 
     }
 
-    // NA
-
-    public static function enviar_correo($data,$_id){
-
-        #Instancia de conexión
-        $mail = new PHPMailer(true);
-
-        try {
-            #Congiguraciones del servidor
-            $mail->SMTPDebug = SMTP::DEBUG_SERVER; //Enable verbose debug output
-            $mail->isSMTP(); //Send using SMTP
-            $mail->Host       = 'smtp.gmail.com'; //Set the SMTP server to send through
-            $mail->SMTPAuth   = true; //Enable SMTP authentication
-            $mail->Username   = 'sergiofol1093@gmail.com'; //SMTP username
-            $mail->Password   = 'guxnjgozzcgoonod'; //SMTP password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; //Enable implicit TLS encryption
-            $mail->Port       = 465;
-
-            #Datos del emisor y receptor
-            $mail->setFrom("sergiofol1093@gmail.com",'Administrador');
-            $mail->addAddress($data->email,"{$data->nombres} {$data->a_paterno}");
-
-            #Configuracion del contenido de envío
-            $mail->isHTML(true);
-            $mail->Subject = "Confirmacion de creacion cuenta de usuario";
-            $mail->AltBody = "Su cuenta de usuario ha sido creada";
-            $mail->Body = "
-            <div>
-                <h3>Hola {$data->nombres} {$data->a_paterno}</h3>
-                <p>Te informamos que tu cuenta de usuario ha sido creada. Tu id es: {$_id}</p>
-            </div>
-            ";
-            $mail->CharSet = 'UTF-8';
-            $mail->Encoding = 'base64';
-            $mail->send();
-            return true;
-        } catch (Exception $e) {
-            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-        }
-
-          
-
-        
-
-
-
-    }
-
 
 }
 
